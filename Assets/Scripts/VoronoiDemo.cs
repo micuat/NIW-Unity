@@ -28,6 +28,7 @@ public class VoronoiDemo : MonoBehaviour
 
 	public BubbleGenerator bubbleGenerator;
 
+    public bool doInitializeNiw = false;
     void Start()
     {
         sites = new List<Point>();
@@ -41,9 +42,15 @@ public class VoronoiDemo : MonoBehaviour
 		OSCHandler.Instance.Init(); //init OSC
 		servers = new Dictionary<string, ServerLog>();
 
-		//OSCHandler.Instance.SendMessageToClient("NiwServer", "/niw/server/config/invert/low/avg/zero", 0);
+        if(doInitializeNiw)
+        {
+            OSCHandler.Instance.SendMessageToClient("NiwServer", "/niw/server/config/invert/low/avg/zero", 0);
+            OSCHandler.Instance.SendMessageToClient("NiwServer", "/niw/server/push/invert/low/avg/zero/contactdetect", "aggregator/floorcontact");
+            OSCHandler.Instance.SendMessageToClient("NiwServer", "/niw/server/config/invert/low", 0.025f);
+            OSCHandler.Instance.SendMessageToClient("NiwServer", "/niw/server/config/invert/low/avg/zero/contactdetect", 10000);
+        }
 
-		GameObject bubbles = GameObject.Find ("Bubbles");
+        GameObject bubbles = GameObject.Find ("Bubbles");
 		bubbleGenerator = bubbles.GetComponent<BubbleGenerator> ();
 	}
 
@@ -62,7 +69,7 @@ public class VoronoiDemo : MonoBehaviour
 					}
 
 					float x = Mathf.Lerp (bounds.min.x, bounds.max.x, (float)packet.Data[2] / 6.0f);
-					float y = Mathf.Lerp (bounds.min.z, bounds.max.z, (float)packet.Data[3] / 6.0f);
+					float y = Mathf.Lerp (bounds.max.z, bounds.min.z, (float)packet.Data[3] / 6.0f);
 					handlers.Add(new HapticHandler(chunks, bounds, new Vector3(x, 0, y), (int)packet.Data[1], this));
 				}
 			}

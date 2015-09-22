@@ -12,7 +12,7 @@ public class FlipCamera : MonoBehaviour {
 		m = Matrix4x4.identity;
 		m [1, 1] = -1;
 
-		GetComponent<Camera>().transform.position = new Vector3 (Screen.width / 2.0f, Screen.height / 2.0f, 0);
+		//GetComponent<Camera>().transform.position = new Vector3 (Screen.width / 2.0f, Screen.height / 2.0f, 0);
 	}
 	
 	// Update is called once per frame
